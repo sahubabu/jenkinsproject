@@ -2,58 +2,24 @@ pipeline {
     agent any
 
     stages {
-        stage('Checkout') {
+        stage('checkout') {
             steps {
-                // Check out the code from your Git repository using credentials
-                script {
-                    checkout([
-                        $class: 'GitSCM',
-                        branches: [[name: '*/main']], // Change to the desired branch
-                        userRemoteConfigs: [[url: 'https://github.com/sahubabu/jenkinsproject.git']],
-                        credentialsId: 'eae29205-3246-4932-b4bf-6b3600beb14b' // Replace with your Git credential ID
-                    ])
-                }
+                checkout([$class: 'GitSCM', 
+                    branches: [[name: '*/main']],
+                    userRemoteConfigs: [[credentialsId: 'eae29205-3246-4932-b4bf-6b3600beb14b', url: 'https://github.com/sahubabu/jenkinsproject.git']]
+                ])
             }
         }
-
-        stage('Find Jenkinsfile') {
+        stage('build') {
             steps {
-                // Locate and execute the Jenkinsfile in the repository
-                script {
-                    def found = fileExists('Jenkinsfile')
-                    if (found) {
-                        echo 'Found Jenkinsfile in the repository.'
-                        load 'Jenkinsfile' // Execute the Jenkinsfile
-                    } else {
-                        error 'Jenkinsfile not found in the repository.'
-                    }
-                }
+                git branch: 'main', credentialsId: 'eae29205-3246-4932-b4bf-6b3600beb14b', url: 'https://github.com/sahubabu/jenkinsproject.git'
+                sh 'python3 sample.py'
             }
         }
-
-        stage('Run Python Script') {
+        stage('deployment') {
             steps {
-                // Execute a Python script from the repository
-                script {
-                    try {
-                        sh 'chmod +x sample.py' // Grant execute permission to the script
-                        sh 'python3 sample.py' // Replace with the actual Python script name
-                    } catch (Exception e) {
-                        currentBuild.result = 'FAILURE'
-                        error("Python script execution failed: ${e.message}")
-                    }
-                    
-                }
+                echo "DONE"
             }
-        }
-    }
-
-    post {
-        success {
-            echo 'Pipeline completed successfully!'
-        }
-        failure {
-            echo 'Pipeline failed! Send a notification.'
         }
     }
 }
