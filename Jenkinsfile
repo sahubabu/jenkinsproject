@@ -10,7 +10,7 @@ pipeline {
                         $class: 'GitSCM',
                         branches: [[name: '*/main']], // Change to the desired branch
                         userRemoteConfigs: [[url: 'https://github.com/sahubabu/jenkinsproject.git']],
-                        credentialsId: 'eae29205-3246-4932-b4bf-6b3600beb14b // Replace with your Git credential ID
+                        credentialsId: 'eae29205-3246-4932-b4bf-6b3600beb14b' // Replace with your Git credential ID
                     ])
                 }
             }
