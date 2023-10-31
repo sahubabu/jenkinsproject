@@ -5,20 +5,30 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Checkout the code from your Git repository
-                git 'https://github.com/sahubabu/jenkinsproject.git'
+                //git 'https://github.com/sahubabu/jenkinsproject.git'
+                withCredentials([gitUsernamePassword(credentialsId: 'eae29205-3246-4932-b4bf-6b3600beb14b', gitToolName: 'Default')]) {
+                sh '''
+                 echo 'checkingout'
+                 '''
+              }
             }
         }
 
         stage('Build') {
             steps {
-                // Build your project (if applicable)
-                echo 'Builting the application...'
+                withCredentials([gitUsernamePassword(credentialsId: 'eae29205-3246-4932-b4bf-6b3600beb14b', gitToolName: 'Default')]) {
+                sh '''
+                 echo 'Builting the application...'
+                 '''
+              }
+                
             }
         }
 
         stage('Run Python Script') {
             steps {
                 // Execute a Python script
+                
                 script {
                     try {
                         sh 'python sample.py'
