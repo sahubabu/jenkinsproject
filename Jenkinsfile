@@ -21,6 +21,18 @@ pipeline {
                 git branch: 'main', credentialsId: "${params.GIT_CREDENTIALS_ID}", url: "${params.GIT_REPO_URL}"
                 sh "python3 ${params.PYTHON_SCRIPT}"
             }
+            post {
+                success {
+                    archiveArtifacts artifacts: '**/target/*.jar', allowEmptyArchive: true
+                    build job: 'downstream-job', parameters: [string(name: 'PYTHON_SCRIPT', value: "${params.PYTHON_SCRIPT}")]
+                }
+                failure {
+                    step([$class: 'Mailer',
+                        notifyEveryUnstableBuild: true,
+                        recipients: 'pavan.py446@gmail.com',
+                        sendToIndividuals: true])
+                }
+            }
         }
         stage('deployment') {
             steps {
@@ -32,11 +44,13 @@ pipeline {
     post {
         success {
             echo 'Pipeline completed successfully!'
-            // Add additional success post-build actions here
         }
         failure {
             echo 'Pipeline failed! Send a notification.'
-            // Add additional failure post-build actions here
+            step([$class: 'Mailer',
+                notifyEveryUnstableBuild: true,
+                recipients: 'pavan.py446@gmail.com',
+                sendToIndividuals: true])
         }
     }
 }
