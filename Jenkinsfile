@@ -4,34 +4,39 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                // Checkout the code from your Git repository
-                //git 'https://github.com/sahubabu/jenkinsproject.git'
-                withCredentials([gitUsernamePassword(credentialsId: 'eae29205-3246-4932-b4bf-6b3600beb14b', gitToolName: 'Default')]) {
-                sh '''
-                 echo 'checkingout'
-                 '''
-              }
+                // Check out the code from your Git repository using credentials
+                script {
+                    checkout([
+                        $class: 'GitSCM',
+                        branches: [[name: '*/main']], // Change to the desired branch
+                        userRemoteConfigs: [[url: 'https://github.com/sahubabu/jenkinsproject.git']],
+                        credentialsId: 'eae29205-3246-4932-b4bf-6b3600beb14b // Replace with your Git credential ID
+                    ])
+                }
             }
         }
 
-        stage('Build') {
+        stage('Find Jenkinsfile') {
             steps {
-                withCredentials([gitUsernamePassword(credentialsId: 'eae29205-3246-4932-b4bf-6b3600beb14b', gitToolName: 'Default')]) {
-                sh '''
-                 echo 'Builting the application...'
-                 '''
-              }
-                
+                // Locate and execute the Jenkinsfile in the repository
+                script {
+                    def found = fileExists('Jenkinsfile')
+                    if (found) {
+                        echo 'Found Jenkinsfile in the repository.'
+                        load 'Jenkinsfile' // Execute the Jenkinsfile
+                    } else {
+                        error 'Jenkinsfile not found in the repository.'
+                    }
+                }
             }
         }
 
         stage('Run Python Script') {
             steps {
-                // Execute a Python script
-                withCredentials([gitUsernamePassword(credentialsId: 'eae29205-3246-4932-b4bf-6b3600beb14b', gitToolName: 'Default')]) 
+                // Execute a Python script from the repository
                 script {
                     try {
-                        sh 'python sample.py'
+                        sh 'python sample.py' // Replace with the actual Python script name
                     } catch (Exception e) {
                         currentBuild.result = 'FAILURE'
                         error("Python script execution failed: ${e.message}")
@@ -39,29 +44,13 @@ pipeline {
                 }
             }
         }
-
-        stage('Test') {
-            steps {
-                // Run tests (if applicable)
-                echo 'Testing the application...'
-            }
-        }
-
-        stage('Deploy') {
-            steps {
-                // Deploy your application (if applicable)
-                echo 'Deploying the application...'
-            }
-        }
     }
 
     post {
         success {
-            // Actions to take if the pipeline succeeds
             echo 'Pipeline completed successfully!'
         }
         failure {
-            // Actions to take if the pipeline fails
             echo 'Pipeline failed! Send a notification.'
         }
     }
