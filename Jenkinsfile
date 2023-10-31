@@ -12,6 +12,7 @@ pipeline {
         stage('Build') {
             steps {
                 // Build your project (if applicable)
+                echo 'Builting the application...'
             }
         }
 
@@ -32,12 +33,14 @@ pipeline {
         stage('Test') {
             steps {
                 // Run tests (if applicable)
+                echo 'Testing the application...'
             }
         }
 
         stage('Deploy') {
             steps {
                 // Deploy your application (if applicable)
+                echo 'Deploying the application...'
             }
         }
     }
