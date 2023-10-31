@@ -36,7 +36,7 @@ pipeline {
                 // Execute a Python script from the repository
                 script {
                     try {
-                        sh 'python sample.py' // Replace with the actual Python script name
+                        sh 'python3 sample.py' // Replace with the actual Python script name
                     } catch (Exception e) {
                         currentBuild.result = 'FAILURE'
                         error("Python script execution failed: ${e.message}")
