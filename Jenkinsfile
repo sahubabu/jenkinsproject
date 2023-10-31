@@ -36,6 +36,7 @@ pipeline {
                 // Execute a Python script from the repository
                 script {
                     try {
+                        sh 'chmod +x sample.py' // Grant execute permission to the script
                         sh 'python3 sample.py' // Replace with the actual Python script name
                     } catch (Exception e) {
                         currentBuild.result = 'FAILURE'
