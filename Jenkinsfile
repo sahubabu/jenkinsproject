@@ -5,7 +5,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Checkout the code from your Git repository
-                git 'https://github.com/yourusername/your-repo.git'
+                git 'https://github.com/sahubabu/jenkinsproject.git'
             }
         }
 
@@ -21,7 +21,7 @@ pipeline {
                 // Execute a Python script
                 script {
                     try {
-                        sh 'python my_python_script.py'
+                        sh 'python sample.py'
                     } catch (Exception e) {
                         currentBuild.result = 'FAILURE'
                         error("Python script execution failed: ${e.message}")
