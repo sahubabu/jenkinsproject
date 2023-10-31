@@ -28,7 +28,7 @@ pipeline {
         stage('Run Python Script') {
             steps {
                 // Execute a Python script
-                
+                withCredentials([gitUsernamePassword(credentialsId: 'eae29205-3246-4932-b4bf-6b3600beb14b', gitToolName: 'Default')]) 
                 script {
                     try {
                         sh 'python sample.py'
