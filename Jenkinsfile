@@ -20,7 +20,7 @@ pipeline {
             steps {
                 // Locate and execute the Jenkinsfile in the repository
                 script {
-                    def found = fileExists('Jenkinsfile')
+                    def found = fileExists('Jenkinsfilee')
                     if (found) {
                         echo 'Found Jenkinsfile in the repository.'
                         load 'Jenkinsfile' // Execute the Jenkinsfile
