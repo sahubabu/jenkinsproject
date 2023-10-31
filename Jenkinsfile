@@ -22,4 +22,14 @@ pipeline {
             }
         }
     }
+    post {
+        success {
+            echo 'Pipeline completed successfully!'
+            // Add additional success post-build actions here
+        }
+        failure {
+            echo 'Pipeline failed! Send a notification.'
+            // Add additional failure post-build actions here
+        }
+    }
 }
